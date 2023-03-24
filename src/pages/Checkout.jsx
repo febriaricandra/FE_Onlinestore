@@ -13,7 +13,7 @@ export default function Checkout() {
   const [selectedOngkir, setSelectedOngkir] = useState("");
   const url = "http://127.0.0.1:8000/api/provinsi";
   const urlcity = `http://127.0.0.1:8000/api/city/${selectedProvinces}`;
-  const urlongkir = `http://127.0.0.1:8000/api/ongkir/${selectedProvinces}/${selectedKurir}`
+  const urlongkir = `http://127.0.0.1:8000/api/ongkir/${selectedCities}/${selectedKurir}`
   const getProvinces = async () => {
     const response = await fetch(url, {
       method: "GET",
