@@ -6,11 +6,11 @@ export default function Checkout() {
   const cart = useSelector((state) => state.cart);
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
-  const [selectedProvinces, setSelectedProvinces] = useState({});
-  const [selectedCities, setSelectedCities] = useState({});
-  const [selectedKurir, setSelectedKurir] = useState({});
+  const [selectedProvinces, setSelectedProvinces] = useState("");
+  const [selectedCities, setSelectedCities] = useState("");
+  const [selectedKurir, setSelectedKurir] = useState("");
   const [ongkir, setOngkir] = useState([]);
-  const [selectedOngkir, setSelectedOngkir] = useState({});
+  const [selectedOngkir, setSelectedOngkir] = useState("");
   const url = "http://127.0.0.1:8000/api/provinsi";
   const urlcity = `http://127.0.0.1:8000/api/city/${selectedProvinces}`;
   const urlongkir = `http://127.0.0.1:8000/api/ongkir/${selectedProvinces}/${selectedKurir}`
@@ -40,11 +40,8 @@ export default function Checkout() {
     getProvinces();
     getCity();
     getOngkir();
-  }, [
-    selectedCities,
-    selectedProvinces, 
-    // selectedOngkir
-  ]);
+  },
+  [selectedProvinces, selectedKurir, selectedOngkir]);
   const handleSelect = (e) => {
     setSelectedProvinces(e.target.value);
   };
@@ -57,7 +54,7 @@ export default function Checkout() {
   const handleSelectOngkir = (e) => {
     setSelectedOngkir(e.target.value);
   };
-  console.log(ongkir.data);
+  console.log(ongkir);
   console.log(selectedOngkir);
   console.log(urlongkir);
   // console.log(ongkir[0].name);
@@ -245,6 +242,7 @@ export default function Checkout() {
                 </select>
               </div>
 
+      
               <div className="col-span-6">
                 <label
                   for="Kurir"
@@ -259,6 +257,7 @@ export default function Checkout() {
                 </select>
               </div>
 
+              {ongkir.data ? (
               <div className="col-span-6">
                 <label
                   for="Ongkir"
@@ -277,6 +276,7 @@ export default function Checkout() {
                 }
                 </select>
               </div>
+              ) : null}
 
               <div className="col-span-6">
                 <label
