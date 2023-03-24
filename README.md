@@ -30,10 +30,10 @@ Buka terminal atau command prompt di komputer Anda.
 Pilih direktori atau folder di mana Anda ingin menyimpan proyek tersebut. Anda dapat menggunakan perintah cd nama_folder untuk masuk ke folder tertentu.
 
 ### step 3
-Setelah itu, ketik perintah git clone https://github.com/febriaricandra/cmlabs-frontend-fulltime-test.git untuk melakukan clone atau mengunduh proyek dari Github ke folder yang telah dipilih.
+Setelah itu, ketik perintah git clone https://github.com/febriaricandra/FE_Onlinestore.git untuk melakukan clone atau mengunduh proyek dari Github ke folder yang telah dipilih.
 
 ### step 4    
-Setelah proses clone selesai, masuk ke folder proyek dengan perintah cd cmlabs-frontend-fulltime-test.
+Setelah proses clone selesai, masuk ke folder proyek dengan perintah cd FE_Onlinestore.
 
 ### step 5
 Kemudian, jalankan perintah npm install untuk menginstall seluruh dependensi yang dibutuhkan oleh proyek.
