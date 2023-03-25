@@ -53,7 +53,7 @@ export default function Cart() {
                     />
 
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900">
+                      <h3 className="text-md md:text-xl lg:text-xl font-bold text-gray-900">
                         {item.name}
                       </h3>
 
@@ -70,7 +70,7 @@ export default function Cart() {
                       </dl>
                     </div>
 
-                    <div className="flex flex-1 items-center justify-end gap-2">
+                    <div className="flex flex-1 items-center justify-end">
                       <form className="flex items-center mx-4">
                         <button
                           className="bg-sky-400 text-white rounded-md mx-4 px-2 py-1"

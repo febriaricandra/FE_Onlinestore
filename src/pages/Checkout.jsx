@@ -10,7 +10,7 @@ export default function Checkout() {
   const [selectedCities, setSelectedCities] = useState("");
   const [selectedKurir, setSelectedKurir] = useState("");
   const [ongkir, setOngkir] = useState([]);
-  const [selectedOngkir, setSelectedOngkir] = useState("");
+  const [selectedOngkir, setSelectedOngkir] = useState(0);
   const url = "http://127.0.0.1:8000/api/provinsi";
   const urlcity = `http://127.0.0.1:8000/api/city/${selectedProvinces}`;
   const urlongkir = `http://127.0.0.1:8000/api/ongkir/${selectedCities}/${selectedKurir}`
@@ -35,11 +35,20 @@ export default function Checkout() {
     const data = await response.json();
     setOngkir(data);
   };
+  const getTotal = () => {
+    let total = 0;
+    cart.forEach((item) => {
+      total += item.price * item.quantity + parseInt(selectedOngkir);
+    });
+    return total;
+  };
+
 
   useEffect(() => {
     getProvinces();
     getCity();
     getOngkir();
+    getTotal();
   },
   [selectedProvinces, selectedKurir, selectedOngkir]);
   const handleSelect = (e) => {
@@ -49,16 +58,15 @@ export default function Checkout() {
     setSelectedCities(e.target.value);
   };
   const handleSelectKurir = (e) => {
+    console.log(e.target.value);
     setSelectedKurir(e.target.value);
   };
   const handleSelectOngkir = (e) => {
     setSelectedOngkir(e.target.value);
   };
-  console.log(ongkir);
+
+  console.log(ongkir.data);
   console.log(selectedOngkir);
-  console.log(urlongkir);
-  // console.log(ongkir[0].name);
-  // console.log(ongkir[0].costs[0].cost[0].value);
 
   return (
     <section>
@@ -75,7 +83,7 @@ export default function Checkout() {
 
             <div>
               <p className="text-2xl font-medium tracking-tight text-gray-900">
-                $99.99
+                {getTotal()}
               </p>
 
               <p className="mt-1 text-sm text-gray-600">For the purchase of</p>
@@ -84,57 +92,33 @@ export default function Checkout() {
             <div>
               <div className="flow-root">
                 <ul className="-my-4 divide-y divide-gray-100">
+                  {cart.map((item) => (
                   <li className="flex items-center gap-4 py-4">
                     <img
-                      src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=830&q=80"
+                      src={`http://127.0.0.1:8000/api/products/${item.image}`}
                       alt=""
                       className="h-16 w-16 rounded object-cover"
                     />
 
                     <div>
                       <h3 className="text-sm text-gray-900">
-                        Basic Tee 6-Pack
+                        {item.name}
                       </h3>
 
                       <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
                         <div>
-                          <dt className="inline">Size:</dt>
-                          <dd className="inline">XXS</dd>
+                          <dt className="inline">Harga:</dt>
+                          <dd className="inline">{item.price}</dd>
                         </div>
 
                         <div>
-                          <dt className="inline">Color:</dt>
-                          <dd className="inline">White</dd>
+                          <dt className="inline">Quantity:</dt>
+                          <dd className="inline">{item.quantity}</dd>
                         </div>
                       </dl>
                     </div>
                   </li>
-
-                  <li className="flex items-center gap-4 py-4">
-                    <img
-                      src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=830&q=80"
-                      alt=""
-                      className="h-16 w-16 rounded object-cover"
-                    />
-
-                    <div>
-                      <h3 className="text-sm text-gray-900">
-                        Basic Tee 6-Pack
-                      </h3>
-
-                      <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
-                        <div>
-                          <dt className="inline">Size:</dt>
-                          <dd className="inline">XXS</dd>
-                        </div>
-
-                        <div>
-                          <dt className="inline">Color:</dt>
-                          <dd className="inline">White</dd>
-                        </div>
-                      </dl>
-                    </div>
-                  </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -223,6 +207,7 @@ export default function Checkout() {
                 </select>
               </div>
 
+              {provinces ? (
               <div className="col-span-6">
                 <label
                   for="City"
@@ -241,8 +226,9 @@ export default function Checkout() {
                 }
                 </select>
               </div>
+              ) : null}
 
-      
+              {cities ? (
               <div className="col-span-6">
                 <label
                   for="Kurir"
@@ -256,6 +242,8 @@ export default function Checkout() {
                   <option value="pos">POS</option>
                 </select>
               </div>
+              ) : null}
+
 
               {ongkir.data ? (
               <div className="col-span-6">
@@ -265,16 +253,14 @@ export default function Checkout() {
                 >
                   Ongkir
                 </label>
-                <select name="Ongkir" id="Ongkir" value={selectedOngkir} onChange={handleSelectOngkir}>
                 {
-                  ongkir.data[0].costs[0].cost.map((item, index) => (
-                        <option key={index} value={item.value}>
-                          {item.value}
-                        </option>
-                    )
-                  )
+                  ongkir.data[0].costs.map(cost => (
+                    <div className="m-2">
+                      <input className="mx-2" type="radio" name="Ongkir" value={cost.cost[0].value} onChange={handleSelectOngkir} />
+                      <label className="text-sm md:text-xl lg:text-xl">{cost.description} = {cost.cost[0].etd} Hari - Rp. {cost.cost[0].value}</label>
+                    </div>
+                  ))
                 }
-                </select>
               </div>
               ) : null}
 
