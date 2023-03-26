@@ -11,6 +11,7 @@ import { AuthProvider } from "./context/AuthContext";
 import User from "./pages/dashboard/User";
 import Protected from "./components/middleware/Protected";
 import Admin from "./pages/dashboard/Admin";
+import Error from "./pages/Error";
 
 function App() {
   return (
@@ -20,9 +21,17 @@ function App() {
         <Route path="/product" element={<Product />} />
         <Route path="/product/:id" element={<ProductCard />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Error />} />
+        <Route
+          path="/checkout"
+          element={
+            <Protected role="user">
+              <Checkout />
+            </Protected>
+          }
+        />
         <Route
           path="/user"
           element={

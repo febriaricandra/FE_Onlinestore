@@ -6,11 +6,12 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
-    
+
     const login = (data) => {
         const name = data.name;
         localStorage.setItem("name", name);
         localStorage.setItem("role", data.role);
+        localStorage.setItem("user", JSON.stringify(data));
         if(data.role === "admin") {
             navigate("/admin");
         }
@@ -23,6 +24,7 @@ const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem("role");
         localStorage.removeItem("name");
+        localStorage.removeItem("user");
         navigate("/");
     }
 

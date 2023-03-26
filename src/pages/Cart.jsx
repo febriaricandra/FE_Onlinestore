@@ -168,14 +168,21 @@ export default function Cart() {
                     >
                       Continue Shopping
                     </Link>
-                    { cart.length > 0 ? 
+                    { (cart.length > 0 && localStorage.getItem("name")) ?
                     <Link
                       to="/checkout"
                       className="block rounded bg-blue-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
                     >
                       Checkout
                     </Link>
-                    : null }
+                    : 
+                    <Link
+                      to="/login"
+                      className="block rounded bg-blue-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                    >
+                      Login
+                    </Link>
+                    }
                   </div>
                 </div>
               </div>
