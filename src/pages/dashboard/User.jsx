@@ -4,8 +4,8 @@ import { AuthContext } from '../../context/AuthContext';
 
 
 export default function User() {
-    const user = JSON.parse(localStorage.getItem('user'));
     const { logout } = useContext(AuthContext);
+    const user = localStorage.getItem('name');
 
   return (
     <div>
