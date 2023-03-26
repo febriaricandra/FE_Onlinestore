@@ -76,9 +76,9 @@ export default function Checkout() {
         <div className="bg-gray-50 py-12 md:py-24">
           <div className="mx-auto max-w-lg space-y-8 px-4 lg:px-8">
             <div className="flex items-center gap-4">
-              <span className="h-10 w-10 rounded-full bg-blue-700"></span>
+              <span className="h-10 w-10 rounded-full bg-gray-100 shadow flex items-center justify-center">🔥</span>
 
-              <h2 className="font-medium text-gray-900">BambooYou</h2>
+              <h2 className="font-medium text-gray-900">Kaktus</h2>
             </div>
 
             <div>

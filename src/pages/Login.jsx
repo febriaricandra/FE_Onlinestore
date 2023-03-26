@@ -1,36 +1,41 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Login() {
-    const url = "http://127.0.0.1:8000/api/login";
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const data = {
-            email: e.target.email.value,
-            password: e.target.password.value,
-        };
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        })
-        .then((res) => res.json())
-        .then((data) => console.log(data));
+  const url = "http://127.0.0.1:8000/api/login";
+  const { login, user } = useContext(AuthContext);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const data = {
+      email: e.target.email.value,
+      password: e.target.password.value,
     };
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.data);
+        login(data.data);
+      });
+  };
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-lg text-center">
         <h1 className="text-2xl font-bold sm:text-3xl">Login</h1>
 
-        <p className="mt-4 text-gray-500">
-            selamat datang di kaktus
-        </p>
+        <p className="mt-4 text-gray-500">selamat datang di kaktus</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="mx-auto mt-8 mb-0 max-w-md space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto mt-8 mb-0 max-w-md space-y-4"
+      >
         <div>
           <label for="email" className="sr-only">
             Email
@@ -104,9 +109,7 @@ export default function Login() {
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-500">
             No account?
-            <Link
-            to="/register"
-            className="underline" href="">
+            <Link to="/register" className="underline" href="">
               Sign up
             </Link>
           </p>

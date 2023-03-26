@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Getting Started with Create Vite App
 
 This project was created by [febriaricandraguritno]
 
