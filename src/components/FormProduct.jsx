@@ -53,8 +53,8 @@ export default function FormProduct() {
     console.log(products);
 
     return (
-        <div className="flex flex-row">
-            <form onSubmit={handleSubmit} className="w-1/3" enctype="multipart/form-data">
+        <div className="flex flex-col md:flex-row lg:flex-row">
+            <form onSubmit={handleSubmit} className="w-full md:w-1/3 lg:w-1/3" enctype="multipart/form-data">
                 <div className="flex flex-col">
                     <label htmlFor="name">Name</label>
                     <input className="my-2 w-full rounded-lg border-gray-200 p-3 text-sm" type="text" name="name" id="name" />
@@ -78,7 +78,7 @@ export default function FormProduct() {
                     Submit
                 </button>
             </form>
-            <div className="w-full p-6">
+            <div className="w-full md:p-6 lg:p-6">
                 <div class="overflow-x-auto rounded-lg border border-gray-200">
                     <table class="min-w-full divide-y-2 divide-gray-200 text-sm">
                         <thead>
