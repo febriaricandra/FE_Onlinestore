@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Checkout() {
   const cart = useSelector((state) => state.cart);
-  const data = localStorage.getItem('user');
+  const data = localStorage.getItem("user");
   const userObj = JSON.parse(data);
-  const [image, setImage] = useState(null);
+  const navigate = useNavigate();
 
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
@@ -16,23 +17,57 @@ export default function Checkout() {
   const [ongkir, setOngkir] = useState([]);
   const [selectedOngkir, setSelectedOngkir] = useState(0);
   const url = "http://127.0.0.1:8000/api/provinsi";
-  const transactions = "http://127.0.0.1:8000/api/transactions"
+  const transactions = "http://127.0.0.1:8000/api/transactions";
+  const detailTransactions = "http://127.0.0.1:8000/api/details";
   const urlcity = `http://127.0.0.1:8000/api/city/${selectedProvinces}`;
-  const urlongkir = `http://127.0.0.1:8000/api/ongkir/${selectedCities}/${selectedKurir}`
+  const urlongkir = `http://127.0.0.1:8000/api/ongkir/${selectedCities}/${selectedKurir}`;
 
   const handleCheckout = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("user_id", userObj.id);
-    formData.append("courier", selectedKurir);
-    formData.append("transfer", e.target.image.files[0]);
-    const response = await fetch(transactions, {
-      method: "POST",
-      body: formData,
+
+    // Request ke endpoint transactions untuk membuat transaction
+    const transactionsData = new FormData();
+    transactionsData.append("user_id", userObj.id);
+    transactionsData.append("courier", selectedKurir);
+    transactionsData.append("transfer", e.target.image.files[0]);
+
+    let transactionId;
+    try {
+      const response = await fetch(transactions, {
+        method: "POST",
+        body: transactionsData,
+      });
+      const responseData = await response.json();
+      transactionId = responseData.data.id;
+    } catch (error) {
+      // Handle error jika request gagal
+      console.error(error);
+      return;
+    }
+
+    
+    const dataDetail = new FormData();
+    cart.forEach(async (item) => {
+      dataDetail.append("product_id", item.id);
+      dataDetail.append("quantity", item.quantity);
+      dataDetail.append("price", item.price);
+      dataDetail.append("transaction_id", transactionId);
+      dataDetail.append("total", getTotal());
+
+      try {
+        await fetch(detailTransactions, {
+          method: "POST",
+          body: dataDetail,
+        });
+        console.log("Checkout success");
+        console.log(dataDetail);
+      } catch (error) {
+        // Handle error jika request gagal
+        console.error(error);
+      }
     });
-    const data = await response.json();
-    console.log(data);
-  }
+  };
+
   const getProvinces = async () => {
     const response = await fetch(url, {
       method: "GET",
@@ -67,8 +102,7 @@ export default function Checkout() {
     getCity();
     getOngkir();
     getTotal();
-  },
-  [selectedProvinces, selectedKurir, selectedOngkir]);
+  }, [selectedProvinces, selectedKurir, selectedOngkir]);
   const handleSelect = (e) => {
     setSelectedProvinces(e.target.value);
   };
@@ -94,7 +128,9 @@ export default function Checkout() {
         <div className="bg-gray-50 py-12 md:py-24">
           <div className="mx-auto max-w-lg space-y-8 px-4 lg:px-8">
             <div className="flex items-center gap-4">
-              <span className="h-10 w-10 rounded-full bg-gray-100 shadow flex items-center justify-center">🔥</span>
+              <span className="h-10 w-10 rounded-full bg-gray-100 shadow flex items-center justify-center">
+                🔥
+              </span>
 
               <h2 className="font-medium text-gray-900">Kaktus</h2>
             </div>
@@ -111,31 +147,29 @@ export default function Checkout() {
               <div className="flow-root">
                 <ul className="-my-4 divide-y divide-gray-100">
                   {cart.map((item) => (
-                  <li className="flex items-center gap-4 py-4">
-                    <img
-                      src={`http://127.0.0.1:8000/api/products/${item.image}`}
-                      alt=""
-                      className="h-16 w-16 rounded object-cover"
-                    />
+                    <li className="flex items-center gap-4 py-4">
+                      <img
+                        src={`http://127.0.0.1:8000/api/products/${item.image}`}
+                        alt=""
+                        className="h-16 w-16 rounded object-cover"
+                      />
 
-                    <div>
-                      <h3 className="text-sm text-gray-900">
-                        {item.name}
-                      </h3>
+                      <div>
+                        <h3 className="text-sm text-gray-900">{item.name}</h3>
 
-                      <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
-                        <div>
-                          <dt className="inline">Harga:</dt>
-                          <dd className="inline">{item.price}</dd>
-                        </div>
+                        <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
+                          <div>
+                            <dt className="inline">Harga:</dt>
+                            <dd className="inline">{item.price}</dd>
+                          </div>
 
-                        <div>
-                          <dt className="inline">Quantity:</dt>
-                          <dd className="inline">{item.quantity}</dd>
-                        </div>
-                      </dl>
-                    </div>
-                  </li>
+                          <div>
+                            <dt className="inline">Quantity:</dt>
+                            <dd className="inline">{item.quantity}</dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -145,7 +179,7 @@ export default function Checkout() {
 
         <div className="bg-white py-12 md:py-24">
           <div className="mx-auto max-w-lg px-4 lg:px-8">
-            <form onSubmit={handleCheckout} className="grid grid-cols-6 gap-4">
+            <form onSubmit={handleCheckout} encType="multipart/form-data" className="grid grid-cols-6 gap-4">
               <div className="col-span-6">
                 <label
                   for="FirstName"
@@ -217,73 +251,91 @@ export default function Checkout() {
                 >
                   Province
                 </label>
-                <select name="Province" id="Province" value={selectedProvinces} onChange={handleSelect}>
-                {
-                  provinces.map(province => (
-                        <option key={province.province_id} value={province.province_id}>
-                          {province.province}
-                        </option>
-                    )
-                  )
-                }
+                <select
+                  name="Province"
+                  id="Province"
+                  value={selectedProvinces}
+                  onChange={handleSelect}
+                >
+                  {provinces.map((province) => (
+                    <option
+                      key={province.province_id}
+                      value={province.province_id}
+                    >
+                      {province.province}
+                    </option>
+                  ))}
                 </select>
               </div>
 
               {provinces ? (
-              <div className="col-span-6">
-                <label
-                  for="City"
-                  className="block text-xs font-medium text-gray-700"
-                >
-                  City
-                </label>
-                <select name="City" id="City" value={selectedCities} onChange={handleSelectCity}>
-                {
-                  cities.map(city => (
-                        <option key={city.city_id} value={city.city_id}>
-                          {city.city_name}
-                        </option>
-                    )
-                  )
-                }
-                </select>
-              </div>
+                <div className="col-span-6">
+                  <label
+                    for="City"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    City
+                  </label>
+                  <select
+                    name="City"
+                    id="City"
+                    value={selectedCities}
+                    onChange={handleSelectCity}
+                  >
+                    {cities.map((city) => (
+                      <option key={city.city_id} value={city.city_id}>
+                        {city.city_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               ) : null}
 
               {cities ? (
-              <div className="col-span-6">
-                <label
-                  for="Kurir"
-                  className="block text-xs font-medium text-gray-700"
-                >
-                  Kurir
-                </label>
-                <select name="Kurir" id="Kurir" value={selectedKurir} onChange={handleSelectKurir}>
-                  <option value="jne">JNE</option>
-                  <option value="tiki">TIKI</option>
-                  <option value="pos">POS</option>
-                </select>
-              </div>
+                <div className="col-span-6">
+                  <label
+                    for="Kurir"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    Kurir
+                  </label>
+                  <select
+                    name="Kurir"
+                    id="Kurir"
+                    value={selectedKurir}
+                    onChange={handleSelectKurir}
+                  >
+                    <option value="jne">JNE</option>
+                    <option value="tiki">TIKI</option>
+                    <option value="pos">POS</option>
+                  </select>
+                </div>
               ) : null}
 
-
               {ongkir.data ? (
-              <div className="col-span-6">
-                <label
-                  for="Ongkir"
-                  className="block text-xs font-medium text-gray-700"
-                >
-                  Ongkir
-                </label>
-                {
-                  ongkir.data[0].costs.map(cost => (
+                <div className="col-span-6">
+                  <label
+                    for="Ongkir"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    Ongkir
+                  </label>
+                  {ongkir.data[0].costs.map((cost) => (
                     <div className="m-2">
-                      <input className="mx-2" type="radio" name="Ongkir" value={cost.cost[0].value} onChange={handleSelectOngkir} />
-                      <label className="text-sm md:text-xl lg:text-xl">{cost.description} = {cost.cost[0].etd} Hari - Rp. {cost.cost[0].value}</label>
+                      <input
+                        className="mx-2"
+                        type="radio"
+                        name="Ongkir"
+                        value={cost.cost[0].value}
+                        onChange={handleSelectOngkir}
+                      />
+                      <label className="text-sm md:text-xl lg:text-xl">
+                        {cost.description} = {cost.cost[0].etd} Hari - Rp.{" "}
+                        {cost.cost[0].value}
+                      </label>
                     </div>
-                  ))
-                }
-              </div>
+                  ))}
+                </div>
               ) : null}
 
               <div className="col-span-6">
