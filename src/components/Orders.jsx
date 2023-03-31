@@ -39,13 +39,16 @@ export default function Orders() {
             <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
               Phone
             </th>
+            <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+              Bukti Pembayaran
+            </th>
             <th className="px-4 py-2"></th>
           </tr>
         </thead>
 
         <tbody className="divide-y divide-gray-200">
           {data.map((item) => (
-            <tr>
+            <tr key={item.id}>
               <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                 {item.transaction.id}
               </td>
@@ -66,6 +69,13 @@ export default function Orders() {
               </td>
               <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                 {item.transaction.user.phone}
+              </td>
+              <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                <img
+                  src={`http://127.0.0.1:8000/api/detail/${item.transaction.transfer}`}
+                  alt="bukti"
+                  className="w-20 h-20"
+                />
               </td>
               <td className="whitespace-nowrap px-4 py-2">
                 <a

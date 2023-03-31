@@ -11,6 +11,7 @@ export default function Admin() {
     const user = localStorage.getItem('name');
     const data = localStorage.getItem('user');
     const userObj = JSON.parse(data);
+    
 
     const tabs = [
       { label: 'Dashboard', content: <Profile user={userObj} /> },
