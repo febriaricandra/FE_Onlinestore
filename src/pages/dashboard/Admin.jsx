@@ -4,6 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import Tabs from '../../components/Tabs';
 import FormProduct from '../../components/FormProduct';
 import Profile from '../../components/Profile';
+import Orders from '../../components/Orders';
 
 export default function Admin() {
     const { logout } = useContext(AuthContext);
@@ -14,7 +15,7 @@ export default function Admin() {
     const tabs = [
       { label: 'Dashboard', content: <Profile user={userObj} /> },
       { label: 'Product', content: <FormProduct /> },
-      { label: 'Orders', content: <div>Content for tab 3</div> },
+      { label: 'Orders', content: <Orders /> },
       { label: 'Starter', content: <div>Content for tab 4</div> },
     ];
 

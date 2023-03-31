@@ -1,12 +1,23 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 export default function Login() {
   const url = "http://127.0.0.1:8000/api/login";
-  const { login, user } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
+  const [error, setError] = useState([]);
   const handleSubmit = (e) => {
     e.preventDefault();
+    if(!e.target.email.value || !e.target.password.value){
+      setError("email or password is empty")
+    }
+    if(e.target.email.value < 6){
+      setError("email must be more than 6 characters")
+    }
+    if(e.target.password.value < 6){
+      setError("password must be more than 6 characters")
+    }
+
     const data = {
       email: e.target.email.value,
       password: e.target.password.value,
@@ -20,9 +31,13 @@ export default function Login() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.data);
-        login(data.data);
-      });
+        if(!data.data){
+          setError(data.message)
+        }else{
+          login(data.data)
+        }
+      })
+      .catch((err) => console.log(err));
   };
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
@@ -122,6 +137,7 @@ export default function Login() {
           </button>
         </div>
       </form>
+      {error && <p className="text-red-500 text-center">{error}</p>}
     </div>
   );
 }
