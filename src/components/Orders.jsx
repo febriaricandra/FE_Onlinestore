@@ -3,6 +3,14 @@ import React, { useState, useEffect } from "react";
 export default function Orders() {
   const orders = "http://127.0.0.1:8000/api/details";
   const [data, setData] = useState([]);
+
+  const handleConfirm = async (id) => {
+    const response = await fetch(`http://127.0.0.1:8000/api/detail/${id}/confirm`, {
+      method: "PUT",
+    });
+    const data = await response.json();
+    console.log(data);
+  };
   useEffect(() => {
     const getOrders = async () => {
       const response = await fetch(orders);
@@ -23,6 +31,9 @@ export default function Orders() {
             </th>
             <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
               Nama Produk
+            </th>
+            <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+              Jumlah
             </th>
             <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
               Customers
@@ -55,6 +66,9 @@ export default function Orders() {
               <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                 {item.product.name}
               </td>
+              <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                {item.quantity}
+              </td>
               <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                 {item.transaction.user.name}
               </td>
@@ -78,12 +92,21 @@ export default function Orders() {
                 />
               </td>
               <td className="whitespace-nowrap px-4 py-2">
-                <a
-                  href="#"
+                { item.status === "Pending" ? (
+                  <button
                   className="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+                  onClick={() => handleConfirm(item.id)}
                 >
                   Confirm
-                </a>
+                </button>
+                ) : (
+                  <button
+                  className="inline-block rounded bg-gray-600 px-4 py-2 text-xs font-medium text-white hover:bg-gray-700"
+                  disabled
+                  >
+                  Confirm
+                </button>
+                )}
               </td>
             </tr>
           ))}
