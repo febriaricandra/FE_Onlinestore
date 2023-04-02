@@ -5,12 +5,36 @@ export default function Orders() {
   const [data, setData] = useState([]);
 
   const handleConfirm = async (id) => {
-    const response = await fetch(`http://127.0.0.1:8000/api/detail/${id}/confirm`, {
-      method: "PUT",
-    });
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/detail/${id}/confirm`,
+      {
+        method: "PUT",
+      }
+    );
     const data = await response.json();
     console.log(data);
   };
+
+  const handleExport = () => {
+    fetch("http://127.0.0.1:8000/api/export", {
+      method: "GET",
+      headers: {
+        "Content-Type": "text/csv",
+      },
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "data-detail.csv");
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      });
+  };
+
+
   useEffect(() => {
     const getOrders = async () => {
       const response = await fetch(orders);
@@ -23,6 +47,15 @@ export default function Orders() {
   console.log(data);
   return (
     <div className="overflow-x-auto">
+      <div className="flex flex-row items-center m-4">
+        <h1>Export Data:</h1>
+        <button
+          onClick={handleExport}
+          className="mx-4 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+        >
+          Export Data
+        </button>
+      </div>
       <table className="min-w-full divide-y-2 divide-gray-200 text-sm">
         <thead>
           <tr>
@@ -92,20 +125,20 @@ export default function Orders() {
                 />
               </td>
               <td className="whitespace-nowrap px-4 py-2">
-                { item.status === "Pending" ? (
+                {item.status === "Pending" ? (
                   <button
-                  className="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
-                  onClick={() => handleConfirm(item.id)}
-                >
-                  Confirm
-                </button>
+                    className="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+                    onClick={() => handleConfirm(item.id)}
+                  >
+                    Confirm
+                  </button>
                 ) : (
                   <button
-                  className="inline-block rounded bg-gray-600 px-4 py-2 text-xs font-medium text-white hover:bg-gray-700"
-                  disabled
+                    className="inline-block rounded bg-gray-600 px-4 py-2 text-xs font-medium text-white hover:bg-gray-700"
+                    disabled
                   >
-                  Confirm
-                </button>
+                    Accepted
+                  </button>
                 )}
               </td>
             </tr>
