@@ -20,6 +20,7 @@ This project was created by [febriaricandraguritno]
 ## Need Backend API
 - Laravel API
 [repo: https://github.com/febriaricandra/BE-Onlinestore]
+[live API: https://kaktushop-app.herokuapp.com/]
 
 ## step to initiate project
 

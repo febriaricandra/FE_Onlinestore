@@ -13,25 +13,16 @@ export default function Orders() {
     );
     const data = await response.json();
     console.log(data);
+    window.location.reload();
   };
 
   const handleExport = () => {
-    fetch("http://127.0.0.1:8000/api/export", {
-      method: "GET",
-      headers: {
-        "Content-Type": "text/csv",
-      },
-    })
-      .then((response) => response.blob())
-      .then((blob) => {
-        const url = window.URL.createObjectURL(new Blob([blob]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "data-detail.csv");
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
-      });
+    const url = "http://127.0.0.1:8000/api/export";
+    var link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "orders.xlsx");
+    document.body.appendChild(link);
+    link.click();
   };
 
 
