@@ -24,6 +24,14 @@ export default function Orders() {
     document.body.appendChild(link);
     link.click();
   };
+  const handleUserExport = () =>{
+    const url = "http://127.0.0.1:8000/api/userexport";
+    var link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "users.xlsx");
+    document.body.appendChild(link);
+    link.click();
+  };
 
 
   useEffect(() => {
@@ -39,12 +47,18 @@ export default function Orders() {
   return (
     <div className="overflow-x-auto">
       <div className="flex flex-row items-center m-4">
-        <h1>Export Data:</h1>
+        <h1>Export to Excel:</h1>
         <button
           onClick={handleExport}
           className="mx-4 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
         >
           Export Data
+        </button>
+        <button
+          onClick={handleUserExport}
+          className="mx-4 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+        >
+          Export User
         </button>
       </div>
       <table className="min-w-full divide-y-2 divide-gray-200 text-sm">

@@ -1,4 +1,5 @@
 import React from "react";
+import asset1 from "../assets/react.svg"
 
 export default function Collections() {
   return (
