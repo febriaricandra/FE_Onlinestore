@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { resetState } from "../redux/cartSlice";
 
 export default function Checkout() {
   const cart = useSelector((state) => state.cart);
   const data = localStorage.getItem("user");
   const userObj = JSON.parse(data);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
@@ -24,7 +26,6 @@ export default function Checkout() {
 
   const handleCheckout = async (e) => {
     e.preventDefault();
-
     // Request ke endpoint transactions untuk membuat transaction
     const transactionsData = new FormData();
     transactionsData.append("user_id", userObj.id);
@@ -60,6 +61,8 @@ export default function Checkout() {
           body: dataDetail,
         });
         console.log("Checkout success");
+        dispatch(resetState());
+        navigate("/")
         console.log(dataDetail);
       } catch (error) {
         // Handle error jika request gagal
