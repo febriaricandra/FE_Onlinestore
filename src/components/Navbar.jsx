@@ -1,8 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import image from "../assets/react.svg";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Navbar() {
+
+  const state = useSelector((state) => state.cart);
+  console.log(state);
   return (
     <nav
       aria-label="Site Nav"
@@ -36,7 +40,7 @@ export default function Navbar() {
             className="inline-flex items-center gap-2 rounded-lg px-3 py-2"
             to="/cart"
           >
-            Carts
+            Carts({state.length})
           </Link>
         </li>
 
