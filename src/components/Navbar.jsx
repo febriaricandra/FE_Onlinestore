@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import image from "../assets/react.svg";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Navbar() {
